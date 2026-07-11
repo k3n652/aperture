@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>APERTURE — Watch without limits</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -345,6 +346,9 @@
   // Firebase Console > Project Settings > General (firebaseConfig)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
+    initializeAppCheck, ReCaptchaV3Provider
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app-check.js";
+  import {
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
     signOut, onAuthStateChanged, updateProfile
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -358,7 +362,21 @@
     projectId: "YOUR-PROJECT-ID",
   };
 
+  // App Check works on the free Spark plan for Auth + Firestore — it verifies
+  // requests actually come from your deployed app, not a script calling
+  // Firebase directly. Get this site key from:
+  // Firebase Console > App Check > Apps > Web app > reCAPTCHA v3
+  const RECAPTCHA_V3_SITE_KEY = "YOUR_RECAPTCHA_V3_SITE_KEY";
+
   const fbApp = initializeApp(firebaseConfig);
+  try {
+    initializeAppCheck(fbApp, {
+      provider: new ReCaptchaV3Provider(RECAPTCHA_V3_SITE_KEY),
+      isTokenAutoRefreshEnabled: true,
+    });
+  } catch (e) {
+    console.warn('App Check not configured yet — fill in RECAPTCHA_V3_SITE_KEY in index.html.', e);
+  }
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
 
@@ -401,6 +419,11 @@
   };
 </script>
 <script>
+// Public site key — safe to expose. Get this from Cloudflare dash > Turnstile.
+const TURNSTILE_SITE_KEY = 'YOUR_TURNSTILE_SITE_KEY';
+let turnstileRendered = false;
+let turnstileToken = null;
+
 /* ==================================================================
    BACKEND CONFIG
    ================================================================== */
@@ -835,6 +858,9 @@ function renderLogin(){
             <label for="fpass">Password</label>
             <input type="password" id="fpass" placeholder="••••••••" autocomplete="current-password"/>
           </div>
+          <div class="field" id="turnstileField" style="display:none;">
+            <div id="turnstileWidget"></div>
+          </div>
           <button type="submit" class="btn btn-copper auth-submit" id="authSubmitBtn">Sign In</button>
         </form>
         <div class="auth-switch">
@@ -884,7 +910,7 @@ function navigate(page, param){
     else if(page==='detail'){ location.hash = '#/title/'+param.type+'/'+param.id; await renderDetail(param); }
     else if(page==='search'){ location.hash = '#/search'; await renderSearchResults(param); }
     else if(page==='mylist'){ location.hash = '#/mylist'; await renderMyList(); }
-    else if(page==='login'){ authMode='signin'; app.innerHTML = renderLogin(); location.hash = '#/login'; syncAuthUI(); }
+    else if(page==='login'){ authMode='signin'; turnstileRendered=false; turnstileToken=null; app.innerHTML = renderLogin(); location.hash = '#/login'; syncAuthUI(); }
     app.style.opacity = 1;
     window.scrollTo({top:0, behavior:'instant'});
     updateNavActive(page);
@@ -950,10 +976,21 @@ function syncAuthUI(){
   document.getElementById('authTitle').textContent = isSignup ? 'Create your account' : 'Welcome back';
   document.getElementById('authSub').textContent = isSignup ? 'Start watching in under a minute' : 'Sign in to keep watching';
   document.getElementById('nameField').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('turnstileField').style.display = isSignup ? 'block' : 'none';
   document.getElementById('authSubmitBtn').textContent = isSignup ? 'Create Account' : 'Sign In';
   document.getElementById('switchPrompt').textContent = isSignup ? 'Already have an account?' : 'New to APERTURE?';
   document.getElementById('switchBtn').textContent = isSignup ? 'Sign in' : 'Create an account';
   document.getElementById('authError').style.display = 'none';
+
+  if(isSignup && !turnstileRendered && window.turnstile){
+    window.turnstile.render('#turnstileWidget', {
+      sitekey: TURNSTILE_SITE_KEY,
+      theme: 'dark',
+      callback: (token) => { turnstileToken = token; },
+      'expired-callback': () => { turnstileToken = null; },
+    });
+    turnstileRendered = true;
+  }
 }
 
 function authErrorMessage(code){
@@ -969,6 +1006,20 @@ function authErrorMessage(code){
   return map[code] || 'Something went wrong. Please try again.';
 }
 
+async function verifyTurnstile(token){
+  try{
+    const res = await fetch(WORKER_BASE + '/verify-turnstile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+    const data = await res.json();
+    return !!data.success;
+  }catch(e){
+    return false;
+  }
+}
+
 async function handleAuthSubmit(e){
   e.preventDefault();
   const name = document.getElementById('fname') ? document.getElementById('fname').value.trim() : '';
@@ -982,12 +1033,31 @@ async function handleAuthSubmit(e){
     err.style.display = 'block';
     return false;
   }
+
+  if(authMode === 'signup'){
+    if(!turnstileToken){
+      err.textContent = 'Please complete the verification challenge.';
+      err.style.display = 'block';
+      return false;
+    }
+  }
+
   err.style.display = 'none';
   submitBtn.disabled = true;
   submitBtn.textContent = 'Please wait…';
 
   try{
     if(authMode === 'signup'){
+      const verified = await verifyTurnstile(turnstileToken);
+      if(!verified){
+        err.textContent = 'Verification failed — please try the challenge again.';
+        err.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+        if(window.turnstile) window.turnstile.reset('#turnstileWidget');
+        turnstileToken = null;
+        return false;
+      }
       await window.__signUp(name, email, pass);
     }else{
       await window.__signIn(email, pass);
