@@ -6,34 +6,34 @@
 <title>APERTURE — Watch without limits</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#0B0C0E;
-    --panel:#16181B;
-    --panel-2:#1E2124;
-    --line: rgba(245,241,234,0.09);
-    --ink:#F5F1EA;
-    --ink-dim:#A6A29B;
-    --ink-faint:#6E6B66;
-    --copper:#C8804A;
-    --copper-bright:#E0995F;
+    --void:#000000;
+    --panel:#161618;
+    --panel-2:#1F1F22;
+    --line: rgba(255,255,255,0.10);
+    --ink:#F5F5F7;
+    --ink-dim:#98989D;
+    --ink-faint:#68686C;
+    --copper:#2997FF;
+    --copper-bright:#5AC8FA;
     --teal:#3E6E63;
-    --radius: 6px;
+    --radius: 12px;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
   body{
     background:var(--void);
     color:var(--ink);
-    font-family:'Manrope', sans-serif;
+    font-family:'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
   ::selection{ background:var(--copper); color:#100b07; }
   a{ color:inherit; text-decoration:none; }
   .mono{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em; }
-  .serif{ font-family:'Fraunces', serif; }
+  .serif{ font-family:'Inter', -apple-system, sans-serif; }
 
   /* focus visibility */
   a:focus-visible, button:focus-visible, input:focus-visible{
@@ -61,7 +61,7 @@
   }
   .brand{
     display:flex; align-items:center; gap:10px;
-    font-family:'Fraunces', serif; font-weight:600; font-size:1.3rem; letter-spacing:0.01em;
+    font-family:'Inter', -apple-system, sans-serif; font-weight:600; font-size:1.3rem; letter-spacing:0.01em;
     cursor:pointer;
   }
   .brand .aperture-mark{
@@ -79,17 +79,17 @@
   }
   .navRight{ display:flex; align-items:center; gap:20px; }
   .btn{
-    font-family:'Manrope', sans-serif; font-weight:700; font-size:0.85rem;
-    border:none; cursor:pointer; border-radius: var(--radius);
-    padding: 10px 20px; transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+    font-family:'Inter', -apple-system, sans-serif; font-weight:600; font-size:0.85rem;
+    border:none; cursor:pointer; border-radius: 980px;
+    padding: 10px 22px; transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
   }
-  .btn:hover{ transform: translateY(-1px); }
-  .btn-primary{ background:var(--ink); color:#111; }
-  .btn-primary:hover{ box-shadow:0 6px 20px rgba(245,241,234,0.15); }
-  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
-  .btn-ghost:hover{ border-color: var(--ink-dim); }
-  .btn-copper{ background:var(--copper); color:#140d07; }
-  .btn-copper:hover{ box-shadow:0 8px 24px rgba(200,128,74,0.35); background:var(--copper-bright); }
+  .btn:hover{ transform: scale(1.03); }
+  .btn-primary{ background:var(--ink); color:#000; }
+  .btn-primary:hover{ box-shadow:0 6px 20px rgba(255,255,255,0.15); }
+  .btn-ghost{ background:rgba(255,255,255,0.12); color:var(--ink); border:1px solid transparent; }
+  .btn-ghost:hover{ background:rgba(255,255,255,0.2); }
+  .btn-copper{ background:var(--copper); color:#fff; }
+  .btn-copper:hover{ box-shadow:0 8px 24px rgba(41,151,255,0.4); background:var(--copper-bright); }
 
   /* ---------- APERTURE MARK (signature) ---------- */
   .aperture-mark svg{ width:100%; height:100%; display:block; }
@@ -141,8 +141,8 @@
   }
   .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--copper-bright); }
   .hero-title{
-    font-family:'Fraunces', serif; font-weight:600; font-size: clamp(2.6rem, 6vw, 5rem);
-    line-height:1.02; letter-spacing:-0.01em; margin-bottom:20px;
+    font-family:'Inter', -apple-system, sans-serif; font-weight:800; font-size: clamp(2.6rem, 6vw, 5rem);
+    line-height:1.0; letter-spacing:-0.03em; margin-bottom:20px;
   }
   .hero-meta{
     display:flex; align-items:center; gap:14px; color:var(--ink-dim);
@@ -153,7 +153,7 @@
     color:var(--ink-dim);
   }
   .hero-desc{
-    color:var(--ink-dim); font-size:1rem; line-height:1.65; margin-bottom:30px; max-width:520px;
+    color:var(--ink-dim); font-size:1.05rem; line-height:1.6; margin-bottom:30px; max-width:520px; font-weight:400;
   }
   .hero-actions{ display:flex; align-items:center; gap:16px; }
   .play-btn{ display:flex; align-items:center; gap:10px; padding:13px 26px 13px 20px; }
@@ -167,7 +167,7 @@
   }
   .row-head .tc{ color:var(--copper); font-size:0.78rem; opacity:0.8; }
   .row-head h2{
-    font-family:'Fraunces', serif; font-weight:500; font-size:1.35rem; letter-spacing:0.01em;
+    font-family:'Inter', -apple-system, sans-serif; font-weight:700; font-size:1.4rem; letter-spacing:-0.02em;
   }
   .row-track{
     display:flex; gap:14px; overflow-x:auto; padding: 4px 4vw 20px;
@@ -177,16 +177,18 @@
   .row-track::-webkit-scrollbar{ display:none; }
   .card{
     flex:0 0 auto; width:230px; scroll-snap-align:start; cursor:pointer;
-    transition: transform .3s cubic-bezier(.2,.7,.3,1);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1);
   }
-  .card:hover{ transform: translateY(-6px); }
+  .card:hover{ transform: scale(1.06); z-index:5; }
   .card-poster{
     position:relative; width:100%; aspect-ratio:2/3; border-radius:var(--radius);
     overflow:hidden; background:var(--panel);
     box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    transition: box-shadow .35s ease;
   }
+  .card:hover .card-poster{ box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.12); }
   .card-poster img{ width:100%; height:100%; object-fit:cover; display:block; transition: filter .3s ease; }
-  .card:hover .card-poster img{ filter: brightness(0.55); }
+  .card:hover .card-poster img{ filter: brightness(0.75); }
   .card-hover-info{
     position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end;
     padding:14px; opacity:0; transition:opacity .25s ease;
@@ -215,18 +217,18 @@
   /* ---------- DETAIL PAGE ---------- */
   .detail-hero{ position:relative; height:78vh; min-height:480px; display:flex; align-items:flex-end; }
   .detail-body{ padding: 40px 4vw 80px; max-width:900px; }
-  .detail-title{ font-family:'Fraunces', serif; font-size:clamp(2.2rem,5vw,3.4rem); font-weight:600; margin-bottom:14px; }
+  .detail-title{ font-family:'Inter', -apple-system, sans-serif; font-size:clamp(2.2rem,5vw,3.4rem); font-weight:600; margin-bottom:14px; }
   .detail-meta{ display:flex; gap:14px; color:var(--ink-dim); font-size:0.86rem; margin-bottom:26px; flex-wrap:wrap; align-items:center; }
   .detail-desc{ font-size:1.05rem; line-height:1.75; color:var(--ink-dim); margin-bottom:36px; max-width:680px; }
   .cast-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:40px; }
   .cast-chip{ border:1px solid var(--line); padding:7px 14px; border-radius:20px; font-size:0.78rem; color:var(--ink-dim); }
-  .section-label{ font-family:'Fraunces', serif; font-size:1.2rem; margin-bottom:16px; }
+  .section-label{ font-family:'Inter', -apple-system, sans-serif; font-size:1.2rem; margin-bottom:16px; }
 
   /* ---------- LOGIN ---------- */
   .auth-wrap{
     min-height:100vh; display:flex; align-items:center; justify-content:center;
     position:relative; padding:40px 20px;
-    background: radial-gradient(ellipse at 50% 0%, rgba(200,128,74,0.10), transparent 55%), var(--void);
+    background: radial-gradient(ellipse at 50% 0%, rgba(41,151,255,0.12), transparent 55%), var(--void);
   }
   .auth-card{
     width:100%; max-width:400px; background:var(--panel);
@@ -235,14 +237,14 @@
   }
   .auth-mark{ display:flex; justify-content:center; margin-bottom:22px; }
   .auth-mark .aperture-mark{ width:38px; height:38px; }
-  .auth-title{ font-family:'Fraunces', serif; font-size:1.7rem; text-align:center; margin-bottom:6px; font-weight:600; }
+  .auth-title{ font-family:'Inter', -apple-system, sans-serif; font-size:1.7rem; text-align:center; margin-bottom:6px; font-weight:600; }
   .auth-sub{ text-align:center; color:var(--ink-faint); font-size:0.85rem; margin-bottom:30px; }
   .field{ margin-bottom:18px; }
   .field label{ display:block; font-size:0.75rem; color:var(--ink-dim); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.06em; }
   .field input{
     width:100%; background:var(--panel-2); border:1px solid var(--line);
     color:var(--ink); padding:12px 14px; border-radius:6px; font-size:0.92rem;
-    font-family:'Manrope',sans-serif; transition:border-color .2s ease;
+    font-family:'Inter', -apple-system, sans-serif; transition:border-color .2s ease;
   }
   .field input:focus{ border-color:var(--copper); outline:none; }
   .auth-submit{ width:100%; padding:13px; font-size:0.9rem; margin-top:6px; }
@@ -270,7 +272,7 @@
     width:100%; max-width:440px; background:var(--panel); border:1px solid var(--line);
     border-radius:12px; padding:32px; animation: contentIn .3s ease-out both;
   }
-  .modal-title{ font-family:'Fraunces', serif; font-size:1.4rem; margin-bottom:8px; }
+  .modal-title{ font-family:'Inter', -apple-system, sans-serif; font-size:1.4rem; margin-bottom:8px; }
   .modal-sub{ color:var(--ink-faint); font-size:0.85rem; line-height:1.6; margin-bottom:22px; }
   .modal-sub a{ color:var(--copper-bright); text-decoration:underline; }
   .modal-actions{ display:flex; gap:10px; margin-top:20px; }
@@ -285,6 +287,43 @@
   .loading-row{ padding:0 4vw; color:var(--ink-faint); font-size:0.85rem; }
   .empty-state{ padding:100px 4vw; text-align:center; color:var(--ink-faint); }
   .empty-state .btn{ margin-top:16px; }
+
+  /* ---------- TOP 10 RANKED ROW ---------- */
+  .rank-card{ display:flex; align-items:flex-end; flex:0 0 auto; scroll-snap-align:start; }
+  .rank-num{
+    font-family:'Inter', -apple-system, sans-serif; font-weight:700; font-size:5.5rem; line-height:0.8;
+    color:var(--void); -webkit-text-stroke: 1.5px rgba(245,241,234,0.35);
+    margin-right:-22px; margin-bottom:-6px; position:relative; z-index:1; user-select:none;
+    flex:0 0 auto;
+  }
+  .rank-card .card{ width:180px; position:relative; z-index:2; }
+
+  /* ---------- BADGE ---------- */
+  .card-badge{
+    position:absolute; top:8px; left:8px; z-index:2;
+    background:rgba(11,12,14,0.82); border:1px solid rgba(245,241,234,0.25);
+    color:var(--copper-bright); font-size:0.62rem; font-weight:700; letter-spacing:0.05em;
+    text-transform:uppercase; padding:3px 8px; border-radius:4px;
+  }
+
+  /* ---------- GENRE GRID ---------- */
+  .genre-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
+    gap:14px; padding:0 4vw;
+  }
+  .genre-tile{
+    position:relative; aspect-ratio:16/8; border-radius:var(--radius); overflow:hidden;
+    cursor:pointer; border:1px solid var(--line);
+    display:flex; align-items:flex-end; padding:16px;
+    background:linear-gradient(135deg, var(--panel-2), var(--panel));
+    transition: transform .25s ease, border-color .25s ease;
+  }
+  .genre-tile:hover{ transform:translateY(-3px); border-color:var(--copper); }
+  .genre-tile span{ font-family:'Inter', -apple-system, sans-serif; font-size:1.1rem; position:relative; z-index:1; }
+  .genre-tile::before{
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 30% 20%, rgba(41,151,255,0.18), transparent 60%);
+  }
 
   /* utility */
   .hidden{ display:none !important; }
@@ -306,12 +345,12 @@
     <span class="aperture-mark">
       <svg viewBox="0 0 22 22" fill="none">
         <g>
-          <path class="blade" d="M11 2 L15 9 L7 9 Z" fill="#C8804A"/>
-          <path class="blade" style="transform:rotate(60deg)" d="M11 2 L15 9 L7 9 Z" fill="#E0995F"/>
-          <path class="blade" style="transform:rotate(120deg)" d="M11 2 L15 9 L7 9 Z" fill="#C8804A"/>
-          <path class="blade" style="transform:rotate(180deg)" d="M11 2 L15 9 L7 9 Z" fill="#E0995F"/>
-          <path class="blade" style="transform:rotate(240deg)" d="M11 2 L15 9 L7 9 Z" fill="#C8804A"/>
-          <path class="blade" style="transform:rotate(300deg)" d="M11 2 L15 9 L7 9 Z" fill="#E0995F"/>
+          <path class="blade" d="M11 2 L15 9 L7 9 Z" fill="#2997FF"/>
+          <path class="blade" style="transform:rotate(60deg)" d="M11 2 L15 9 L7 9 Z" fill="#5AC8FA"/>
+          <path class="blade" style="transform:rotate(120deg)" d="M11 2 L15 9 L7 9 Z" fill="#2997FF"/>
+          <path class="blade" style="transform:rotate(180deg)" d="M11 2 L15 9 L7 9 Z" fill="#5AC8FA"/>
+          <path class="blade" style="transform:rotate(240deg)" d="M11 2 L15 9 L7 9 Z" fill="#2997FF"/>
+          <path class="blade" style="transform:rotate(300deg)" d="M11 2 L15 9 L7 9 Z" fill="#5AC8FA"/>
         </g>
       </svg>
     </span>
@@ -542,7 +581,7 @@ function demoBackdrop(item){ return placeholderImg(item._demoBackdropSeed, true)
 const ICON_PLAY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5-9-5.5z"/></svg>`;
 const ICON_PLUS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11"/></svg>`;
 const ICON_BACK = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 2.5 4 8l6 5.5"/></svg>`;
-const ICON_IRIS = `<svg width="24" height="24" viewBox="0 0 22 22" fill="none"><path d="M11 2 L15 9 L7 9 Z" fill="#F5F1EA"/><path d="M11 2 L15 9 L7 9 Z" fill="#F5F1EA" transform="rotate(120 11 11)"/><path d="M11 2 L15 9 L7 9 Z" fill="#F5F1EA" transform="rotate(240 11 11)"/></svg>`;
+const ICON_IRIS = `<svg width="24" height="24" viewBox="0 0 22 22" fill="none"><path d="M11 2 L15 9 L7 9 Z" fill="#F5F5F7"/><path d="M11 2 L15 9 L7 9 Z" fill="#F5F5F7" transform="rotate(120 11 11)"/><path d="M11 2 L15 9 L7 9 Z" fill="#F5F5F7" transform="rotate(240 11 11)"/></svg>`;
 
 function escapeAttr(str){ return str.replace(/"/g, '&quot;'); }
 function wItem(t){
@@ -568,7 +607,7 @@ async function hydrateWatchlistButtons(){
 }
 
 /* ---------------- RENDERERS ---------------- */
-function cardHTML(t){
+function cardHTML(t, badge){
   const isDemo = !!t._demoSeed;
   const posterUrl = isDemo ? demoPoster(t) : poster(t);
   const genreLabel = t.genre_names && t.genre_names[0] ? t.genre_names[0] : (t.media_type==='tv'?'Series':'Film');
@@ -576,6 +615,7 @@ function cardHTML(t){
   return `
     <div class="card" onclick="navigate('detail', {type:'${t.media_type}', id:${t.id}})" tabindex="0">
       <div class="card-poster">
+        ${badge ? `<span class="card-badge">${badge}</span>` : ''}
         <img src="${posterUrl}" alt="${t.title} poster" loading="lazy"/>
         <div class="card-hover-info">
           <div class="mini-play">${ICON_PLAY}</div>
@@ -588,7 +628,7 @@ function cardHTML(t){
     </div>`;
 }
 
-function rowHTML(tc, label, items){
+function rowHTML(tc, label, items, badge){
   if(!items || !items.length) return '';
   return `
     <div class="row-section">
@@ -596,7 +636,44 @@ function rowHTML(tc, label, items){
         <span class="tc mono">${tc}</span>
         <h2>${label}</h2>
       </div>
-      <div class="row-track">${items.map(cardHTML).join('')}</div>
+      <div class="row-track">${items.map(t=>cardHTML(t, badge)).join('')}</div>
+    </div>`;
+}
+
+function topTenRowHTML(tc, label, items){
+  if(!items || !items.length) return '';
+  const top10 = items.slice(0,10);
+  return `
+    <div class="row-section">
+      <div class="row-head">
+        <span class="tc mono">${tc}</span>
+        <h2>${label}</h2>
+      </div>
+      <div class="row-track">
+        ${top10.map((t,i)=>`
+          <div class="rank-card">
+            <span class="rank-num">${i+1}</span>
+            ${cardHTML(t)}
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function genreGridHTML(){
+  if(!Object.keys(genreMap).length) return '';
+  const entries = Object.entries(genreMap).slice(0, 16);
+  return `
+    <div class="row-section">
+      <div class="row-head">
+        <span class="tc mono">00:07</span>
+        <h2>Browse by Genre</h2>
+      </div>
+      <div class="genre-grid">
+        ${entries.map(([id,name])=>`
+          <div class="genre-tile" onclick="navigate('genre', {id:${id}, name:'${name.replace(/'/g,"\\'")}'})">
+            <span>${name}</span>
+          </div>`).join('')}
+      </div>
     </div>`;
 }
 
@@ -678,15 +755,16 @@ async function renderHome(){
       <div class="page">
         ${heroSectionHTML(hero)}
         <section class="rows">
-          ${rowHTML("00:01","Trending This Week", trendingItems.slice(1,16))}
-          ${rowHTML("00:02","Popular Films", popularMovieItems)}
-          ${rowHTML("00:03","Popular Series", popularTVItems)}
+          ${rowHTML("00:01","Trending This Week", trendingItems.slice(1,16), "Trending")}
+          ${topTenRowHTML("00:02","Top 10 Films", popularMovieItems)}
+          ${topTenRowHTML("00:03","Top 10 Series", popularTVItems)}
           ${rowHTML("00:04","Top Rated Films", topRatedMovieItems)}
           ${rowHTML("00:05","Top Rated Series", topRatedTVItems)}
-          ${rowHTML("00:06","Coming Soon", upcomingItems)}
+          ${rowHTML("00:06","Coming Soon", upcomingItems, "Coming Soon")}
+          ${genreGridHTML()}
         </section>
-        ${footerHTML()}
       </div>`;
+    document.getElementById('app').insertAdjacentHTML('beforeend', footerHTML());
   }catch(e){
     renderApiError(e);
   }
@@ -736,7 +814,7 @@ async function renderDetail(param){
           <div class="section-label">Cast</div>
           <div class="cast-row">${t._demoCast.map(c=>`<span class="cast-chip">${c}</span>`).join('')}</div>
           <div class="section-label">More Like This</div>
-          <div class="row-track" style="padding:4px 0 20px;">${more.map(cardHTML).join('')}</div>
+          <div class="row-track" style="padding:4px 0 20px;">${more.map(t=>cardHTML(t)).join('')}</div>
         </div>
         ${footerHTML()}
       </div>`;
@@ -788,11 +866,38 @@ async function renderDetail(param){
           ` : ''}
           ${similarItems.length ? `
             <div class="section-label">More Like This</div>
-            <div class="row-track" style="padding:4px 0 20px;">${similarItems.map(cardHTML).join('')}</div>
+            <div class="row-track" style="padding:4px 0 20px;">${similarItems.map(t=>cardHTML(t)).join('')}</div>
           ` : ''}
         </div>
         ${footerHTML()}
       </div>`;
+  }catch(e){
+    renderApiError(e);
+  }
+}
+
+async function renderGenre(param){
+  const app = document.getElementById('app');
+  app.innerHTML = `<div class="page"><div class="empty-state">Loading ${param.name}…</div></div>`;
+  try{
+    const [movies, tv] = await Promise.all([
+      apiFetch('/discover/movie', { with_genres: param.id, sort_by: 'popularity.desc' }),
+      apiFetch('/discover/tv', { with_genres: param.id, sort_by: 'popularity.desc' }),
+    ]);
+    const movieItems = movies.results.map(r=>normalize(r,'movie'));
+    const tvItems = tv.results.map(r=>normalize(r,'tv'));
+    app.innerHTML = `
+      <div class="page">
+        <div class="detail-body" style="max-width:1200px;padding-top:120px;">
+          <h2 class="serif" style="font-size:1.8rem;margin-bottom:8px;">${param.name}</h2>
+          <p style="color:var(--ink-faint);margin-bottom:24px;">Films and series in this genre.</p>
+        </div>
+        <section class="rows">
+          ${rowHTML("","Films", movieItems)}
+          ${rowHTML("","Series", tvItems)}
+        </section>
+      </div>`;
+    document.getElementById('app').insertAdjacentHTML('beforeend', footerHTML());
   }catch(e){
     renderApiError(e);
   }
@@ -808,7 +913,7 @@ async function renderSearchResults(query){
         <div class="detail-body" style="max-width:1200px;padding-top:120px;">
           <h2 class="serif" style="font-size:1.8rem;margin-bottom:24px;">Results for "${query}"</h2>
           <div class="row-track" style="padding:4px 0 20px;flex-wrap:wrap;">
-            ${results.length ? results.map(cardHTML).join('') : '<p style="color:var(--ink-faint)">No demo titles match. Add a TMDB key to search the full catalog.</p>'}
+            ${results.length ? results.map(t=>cardHTML(t)).join('') : '<p style="color:var(--ink-faint)">No demo titles match. Add a TMDB key to search the full catalog.</p>'}
           </div>
         </div>
         ${footerHTML()}
@@ -825,7 +930,7 @@ async function renderSearchResults(query){
         <div class="detail-body" style="max-width:1200px;padding-top:120px;">
           <h2 class="serif" style="font-size:1.8rem;margin-bottom:24px;">Results for "${query}"</h2>
           <div class="row-track" style="padding:4px 0 20px;flex-wrap:wrap;">
-            ${results.length ? results.map(cardHTML).join('') : '<p style="color:var(--ink-faint)">No matches found.</p>'}
+            ${results.length ? results.map(t=>cardHTML(t)).join('') : '<p style="color:var(--ink-faint)">No matches found.</p>'}
           </div>
         </div>
         ${footerHTML()}
@@ -840,7 +945,7 @@ function renderLogin(){
     <div class="auth-wrap">
       <div class="auth-card">
         <div class="auth-mark">
-          <span class="aperture-mark">${ICON_IRIS.replace('#F5F1EA','#C8804A')}</span>
+          <span class="aperture-mark">${ICON_IRIS.replace('#F5F5F7','#2997FF')}</span>
         </div>
         <h1 class="auth-title" id="authTitle">Welcome back</h1>
         <p class="auth-sub" id="authSub">Sign in to keep watching</p>
@@ -910,6 +1015,7 @@ function navigate(page, param){
     else if(page==='detail'){ location.hash = '#/title/'+param.type+'/'+param.id; await renderDetail(param); }
     else if(page==='search'){ location.hash = '#/search'; await renderSearchResults(param); }
     else if(page==='mylist'){ location.hash = '#/mylist'; await renderMyList(); }
+    else if(page==='genre'){ location.hash = '#/genre/'+param.id; await renderGenre(param); }
     else if(page==='login'){ authMode='signin'; turnstileRendered=false; turnstileToken=null; app.innerHTML = renderLogin(); location.hash = '#/login'; syncAuthUI(); }
     app.style.opacity = 1;
     window.scrollTo({top:0, behavior:'instant'});
@@ -1112,7 +1218,7 @@ async function renderMyList(){
       <div class="detail-body" style="max-width:1200px;padding-top:120px;">
         <h2 class="serif" style="font-size:1.8rem;margin-bottom:24px;">My List</h2>
         <div class="row-track" style="padding:4px 0 20px;flex-wrap:wrap;">
-          ${items.length ? items.map(cardHTML).join('') : '<p style="color:var(--ink-faint)">Nothing saved yet — tap the + on any title to add it here.</p>'}
+          ${items.length ? items.map(t=>cardHTML(t)).join('') : '<p style="color:var(--ink-faint)">Nothing saved yet — tap the + on any title to add it here.</p>'}
         </div>
       </div>
       ${footerHTML()}
