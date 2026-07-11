@@ -10,19 +10,44 @@ part it's actually good at:
 
 ## Honest trade-off vs. the Firebase-Functions version
 
-The earlier version used Firebase App Check, which cryptographically verifies a
-request came from your real deployed site. Cloudflare Workers on the free tier
-doesn't have an equivalent, so this version relies on:
-- **CORS** — browsers block cross-origin calls from other sites.
-- **Best-effort rate limiting** — capped per IP, but it's in-memory per Worker
-  instance, not globally enforced (see the comment in `worker/src/index.js`).
+The earlier version used Firebase App Check tied to Cloud Functions specifically.
+This version adds App Check back for **Auth and Firestore directly** (which works
+fine on the free Spark plan — no Cloud Functions needed for that part) plus
+**Cloudflare Turnstile** on signup. The TMDB proxy itself still relies on CORS +
+best-effort rate limiting rather than App Check, since Workers on the free tier
+can't verify Firebase App Check tokens without extra plumbing. Layered together,
+this covers the realistic abuse paths: bots hitting Firestore/Auth directly
+(App Check), scripted mass account creation (Turnstile), and casual scraping of
+the TMDB proxy (CORS + rate limit).
 
-This is meaningfully weaker than App Check against a determined attacker
-directly calling your Worker URL with a spoofed Origin header (trivial with curl).
-It's genuinely fine against casual scraping and accidental overuse. If you want
-App Check-level protection later without paying for Cloud Functions, revisit —
-Cloudflare does have paid bot-management tools, or you could add basic HMAC
-request signing between your frontend and Worker as a middle ground.
+## Part 3 — App Check (Auth + Firestore)
+
+1. Firebase Console → **App Check** → register your web app.
+2. Choose **reCAPTCHA v3** → follow the link to create a site key at
+   https://www.google.com/recaptcha/admin (register your Firebase domain(s)).
+3. Paste that site key into `RECAPTCHA_V3_SITE_KEY` in `public/index.html`
+   (in the same `<script type="module">` block as `firebaseConfig`).
+4. Deploy, open the live site, sign in/out a few times to generate traffic.
+5. Back in Firebase Console → App Check → find **Authentication** and
+   **Cloud Firestore** in the list → **Enforce**. Do this only after confirming
+   the site still works — enforcing before the site key is wired up correctly
+   will lock out real users too.
+
+## Part 4 — Cloudflare Turnstile (bot-resistant signup)
+
+1. Cloudflare dashboard → **Turnstile** → **Add site**. For local testing you
+   can use Cloudflare's documented test keys; for production, register your
+   real domain.
+2. Copy the **site key** into `TURNSTILE_SITE_KEY` in `public/index.html`.
+3. Copy the **secret key**, then from the `worker/` folder:
+   ```bash
+   wrangler secret put TURNSTILE_SECRET_KEY
+   ```
+4. Redeploy the Worker: `wrangler deploy`.
+
+The widget only appears on the **Create an account** form — signing in stays
+frictionless. On submit, the token is sent to your Worker's `/verify-turnstile`
+route, which checks it against Cloudflare's servers before the account is created.
 
 ## What's protected, what isn't
 
@@ -91,6 +116,18 @@ the site — no frontend architecture changes that.
   from Firestore.
 - Sign out, sign back in — your list should persist (it's tied to your account,
   not the browser).
+
+## Part 5 — Once you have a real domain
+
+- **Route DNS through Cloudflare**, not your registrar's default nameservers
+  and not Vercel. Add the domain in the Cloudflare dashboard, switch its
+  nameservers to Cloudflare's, keep the proxy ("orange cloud") on. This puts
+  Cloudflare in front of your *entire* site, not just the Worker — free DDoS
+  protection, managed WAF rules, and:
+- **Bot Fight Mode** — Cloudflare dashboard → Security → Bots → turn on. Free,
+  throttles obvious bot/scraper traffic sitewide.
+- **Firebase sign-up throttling** — Firebase Console → Authentication →
+  Settings → cap new account creation per IP per day. One toggle, free.
 
 ## Costs to watch
 
