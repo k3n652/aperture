@@ -1,6 +1,7 @@
-// APERTURE TMDB proxy — runs on Cloudflare Workers' free tier (100k req/day, no card).
-// The TMDB key lives only as a Worker secret (`wrangler secret put TMDB_API_KEY`),
-// never in this file and never sent to the browser.
+// APERTURE backend — runs on Cloudflare Workers' free tier (100k req/day, no card).
+// Two jobs:
+//   1. Proxy TMDB requests (key never reaches the browser)
+//   2. Verify Cloudflare Turnstile tokens for signup (blocks scripted mass account creation)
 
 // ---- CONFIG ----
 // After deploying, replace with your real Firebase Hosting URL(s).
@@ -34,9 +35,9 @@ function isAllowed(ip) {
   return b.count <= RATE_LIMIT;
 }
 
-function corsHeaders(origin) {
+function corsHeaders(origin, methods) {
   const headers = {
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Methods': methods,
     'Access-Control-Allow-Headers': 'Content-Type',
     'Vary': 'Origin',
   };
@@ -50,46 +51,96 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin') || '';
-    const headers = corsHeaders(origin);
 
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers });
+    if (url.pathname === '/verify-turnstile') {
+      return handleTurnstile(request, env, origin);
     }
-    if (request.method !== 'GET') {
-      return json({ error: 'Method not allowed' }, 405, headers);
-    }
-    if (!ALLOWED_ORIGINS.includes(origin)) {
-      return json({ error: 'Origin not allowed' }, 403, headers);
-    }
-
-    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-    if (!isAllowed(ip)) {
-      return json({ error: 'Too many requests. Please slow down.' }, 429, headers);
-    }
-
-    const tmdbPath = url.pathname.replace(/^\/tmdb/, '') || '/';
-    const tmdbUrl = new URL('https://api.themoviedb.org/3' + tmdbPath);
-    tmdbUrl.searchParams.set('api_key', env.TMDB_API_KEY);
-    for (const [key, value] of url.searchParams.entries()) {
-      tmdbUrl.searchParams.set(key, value);
-    }
-
-    try {
-      const tmdbRes = await fetch(tmdbUrl.toString());
-      const body = await tmdbRes.text();
-      return new Response(body, {
-        status: tmdbRes.status,
-        headers: {
-          ...headers,
-          'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=300',
-        },
-      });
-    } catch (e) {
-      return json({ error: 'Upstream TMDB request failed' }, 502, headers);
-    }
+    return handleTmdb(request, env, url, origin);
   },
 };
+
+async function handleTmdb(request, env, url, origin) {
+  const headers = corsHeaders(origin, 'GET, OPTIONS');
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers });
+  }
+  if (request.method !== 'GET') {
+    return json({ error: 'Method not allowed' }, 405, headers);
+  }
+  if (!ALLOWED_ORIGINS.includes(origin)) {
+    return json({ error: 'Origin not allowed' }, 403, headers);
+  }
+
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (!isAllowed(ip)) {
+    return json({ error: 'Too many requests. Please slow down.' }, 429, headers);
+  }
+
+  const tmdbPath = url.pathname.replace(/^\/tmdb/, '') || '/';
+  const tmdbUrl = new URL('https://api.themoviedb.org/3' + tmdbPath);
+  tmdbUrl.searchParams.set('api_key', env.TMDB_API_KEY);
+  for (const [key, value] of url.searchParams.entries()) {
+    tmdbUrl.searchParams.set(key, value);
+  }
+
+  try {
+    const tmdbRes = await fetch(tmdbUrl.toString());
+    const body = await tmdbRes.text();
+    return new Response(body, {
+      status: tmdbRes.status,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
+  } catch (e) {
+    return json({ error: 'Upstream TMDB request failed' }, 502, headers);
+  }
+}
+
+async function handleTurnstile(request, env, origin) {
+  const headers = corsHeaders(origin, 'POST, OPTIONS');
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers });
+  }
+  if (request.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405, headers);
+  }
+  if (!ALLOWED_ORIGINS.includes(origin)) {
+    return json({ error: 'Origin not allowed' }, 403, headers);
+  }
+
+  let token;
+  try {
+    const body = await request.json();
+    token = body.token;
+  } catch (e) {
+    return json({ success: false, error: 'Malformed request' }, 400, headers);
+  }
+  if (!token) {
+    return json({ success: false, error: 'Missing token' }, 400, headers);
+  }
+
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const verifyBody = new FormData();
+  verifyBody.append('secret', env.TURNSTILE_SECRET_KEY);
+  verifyBody.append('response', token);
+  if (ip) verifyBody.append('remoteip', ip);
+
+  try {
+    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: verifyBody,
+    });
+    const result = await verifyRes.json();
+    return json({ success: !!result.success }, 200, headers);
+  } catch (e) {
+    return json({ success: false, error: 'Verification service unreachable' }, 502, headers);
+  }
+}
 
 function json(obj, status, headers) {
   return new Response(JSON.stringify(obj), {
@@ -97,3 +148,4 @@ function json(obj, status, headers) {
     headers: { ...headers, 'Content-Type': 'application/json' },
   });
 }
+
