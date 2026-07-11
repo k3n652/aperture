@@ -395,11 +395,16 @@
     getFirestore, doc, setDoc, deleteDoc, getDoc, getDocs, collection
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    authDomain: "YOUR-PROJECT-ID.firebaseapp.com",
-    projectId: "YOUR-PROJECT-ID",
-  };
+ // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB6Ip_lENUny7mVFBYX9mSp697pdcx5ozA",
+  authDomain: "aperture-tv.firebaseapp.com",
+  projectId: "aperture-tv",
+  storageBucket: "aperture-tv.firebasestorage.app",
+  messagingSenderId: "256410741130",
+  appId: "1:256410741130:web:a9b0ee0733f3de70668073",
+  measurementId: "G-TSXZ4F12HX"
+};
 
   // App Check works on the free Spark plan for Auth + Firestore — it verifies
   // requests actually come from your deployed app, not a script calling
