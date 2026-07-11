@@ -1,6 +1,0 @@
-name = "aperture-tmdb"
-main = "src/index.js"
-compatibility_date = "2026-01-01"
-
-# TMDB_API_KEY is set as a secret, not here:
-#   wrangler secret put TMDB_API_KEY
